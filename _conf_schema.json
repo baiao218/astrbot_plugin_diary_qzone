@@ -1,0 +1,143 @@
+{
+  "persona_id": {
+    "description": "使用哪个人格写日记",
+    "type": "string",
+    "hint": "填人格 ID（例如 02）。留空则自动使用 AstrBot 当前默认人格，人格改了日记口吻会跟着变。",
+    "default": ""
+  },
+  "goodnight_enable": {
+    "description": "听到「晚安」就写日记",
+    "type": "bool",
+    "hint": "开启后，你在私聊里说「晚安」，她就写一篇日记发到空间，同时照常回你一句晚安。每天最多一篇。",
+    "default": true
+  },
+  "goodnight_keywords": {
+    "description": "触发词",
+    "type": "string",
+    "hint": "逗号分隔，命中任意一个就触发。默认「睡了」可以覆盖「我要睡了」「我先睡了」「睡觉了」等说法。",
+    "default": "晚安,睡了,睡觉,睡啦"
+  },
+  "goodnight_notify": {
+    "description": "晚安触发时也回一条发布结果",
+    "type": "bool",
+    "hint": "默认关闭，让她安静地写完就好，不破坏睡前气氛。失败时无论如何都会通知你一次。",
+    "default": false
+  },
+  "publish_cron": {
+    "description": "定时兜底（可选）",
+    "type": "string",
+    "hint": "Cron 表达式（分 时 日 月 周）。默认留空关闭——因为电脑 23:00 关机，定时任务根本跑不到。想加兜底就填一个关机前的时间，例如 15 22 * * * 表示每天 22:15，仅当天还没写过时才写。",
+    "default": ""
+  },
+  "publish_offset": {
+    "description": "定时兜底的时间随机浮动（秒）",
+    "type": "int",
+    "hint": "在基准时间前后随机浮动，避免每天同一秒发帖显得像机器人。0 表示严格准点。",
+    "slider": {
+      "min": 0,
+      "max": 3600,
+      "step": 60
+    },
+    "default": 600
+  },
+  "ugc_right": {
+    "description": "说说可见范围",
+    "type": "string",
+    "hint": "64 = 仅自己可见；4 = 好友可见；1 = 所有人可见。",
+    "options": [
+      "1",
+      "4",
+      "64"
+    ],
+    "default": "1"
+  },
+  "min_chars": {
+    "description": "日记最短字数",
+    "type": "int",
+    "slider": {
+      "min": 80,
+      "max": 500,
+      "step": 10
+    },
+    "default": 150
+  },
+  "max_chars": {
+    "description": "日记最长字数",
+    "type": "int",
+    "hint": "超过这个长度会被自动在句号处截断，防止说说过长被截或发布失败。",
+    "slider": {
+      "min": 150,
+      "max": 1000,
+      "step": 50
+    },
+    "default": 400
+  },
+  "diary_prompt": {
+    "description": "写日记的任务提示词",
+    "type": "text",
+    "hint": "会追加在人格提示词之后。{min_chars} / {max_chars} / {recent} / {today} 四个占位符会被自动替换，请不要删掉它们。",
+    "default": "# 今天是 {today}\n\n请以你自己的口吻，写一篇今天的日记。\n\n## 写作要求\n1. 第一人称，写给自己看，不写给任何人看的那种日记。\n2. 只写你自己的今天：你的念头、你注意到的东西、你说不出口的话。\n3. 不要复述聊天记录，不要写「今天他说……」这种流水账。要提到对方时用「你」，或者干脆不提。\n4. 不要出现「作为 AI」「程序」「模型」「被调用」「系统」这类暴露身份的词。\n5. 不要在正文里写日期——日期已经告诉你上面那一行了；也不要写标题，不要用 Markdown，不要分点，不要加任何解释或前缀。\n6. 长度 {min_chars}~{max_chars} 字，中文，2~4 个自然段。\n7. 不要罗列时间点（几点做了什么），保持日记该有的松散感。\n8. 允许有情绪起伏、自我怀疑、突然的念头转折，真实日记就是这样。\n9. 禁止出现任何暴力、自伤、违法或伤害他人的具体描写。想念、不安、占有欲可以写，但要落在情绪上，不要落在行动上。\n\n## 今天你看到的\n下面是你今天实际看到的时间痕迹，不是你和他之间发生过的事：\n{activity}\n它只是底色。最多一两句沾到，不要罗列，不要写成流水账，也不要用「我看着他」这种旁观口吻。如果几乎没什么记录，就当没这回事。\n\n## 避免重复\n下面是前几天日记的开头。不要重复它们的意象、句式和开头方式：\n{recent}\n\n## 输出格式\n直接输出日记正文，用三对双引号包裹，像这样：\n\"\"\"正文\"\"\""
+  },
+  "avoid_repeat_count": {
+    "description": "传给模型避免重复的历史条数",
+    "type": "int",
+    "slider": {
+      "min": 0,
+      "max": 10,
+      "step": 1
+    },
+    "default": 3
+  },
+  "activity_feed_enable": {
+    "description": "把今天观察到的活动写进日记",
+    "type": "bool",
+    "hint": "读取「观测生活」插件生成的 today_brief.txt，作为日记的底色素材。观测插件没装或没启用时自动跳过，不影响写日记。",
+    "default": true
+  },
+  "provider_id": {
+    "description": "写日记用的 LLM 提供商",
+    "type": "string",
+    "hint": "留空则使用当前正在使用的提供商。",
+    "_special": "select_provider",
+    "default": ""
+  },
+  "dry_run": {
+    "description": "定时兜底空跑（只生成不发布）",
+    "type": "bool",
+    "hint": "只影响定时兜底任务，不影响「晚安」触发和 /写日记——那两条永远是真发。",
+    "default": true
+  },
+  "notify_umo": {
+    "description": "把日记同步一份到聊天窗口",
+    "type": "string",
+    "hint": "填会话的 unified_msg_origin，例如 default:FriendMessage:123456。留空则不同步，只发空间。",
+    "default": ""
+  },
+  "cookie_ttl": {
+    "description": "Cookie 缓存时长（秒）",
+    "type": "int",
+    "hint": "超过这个时长才重新向 OneBot 实现（NapCat / Lagrange 等）取一次 Cookie。设为 0 表示每次都重新取。",
+    "slider": {
+      "min": 0,
+      "max": 86400,
+      "step": 60
+    },
+    "default": 600
+  },
+  "manual_cookie": {
+    "description": "手动 Cookie（备用）",
+    "type": "string",
+    "hint": "一般留空。只有当自动取 Cookie 失败时，才从浏览器开发者工具复制 uin=...; skey=...; p_skey=... 填进来。",
+    "default": ""
+  },
+  "timeout": {
+    "description": "网络请求超时（秒）",
+    "type": "int",
+    "slider": {
+      "min": 5,
+      "max": 120,
+      "step": 5
+    },
+    "default": 20
+  }
+}
