@@ -23,6 +23,12 @@
     "hint": "默认关闭，让她安静地写完就好，不破坏睡前气氛。失败时无论如何都会通知你一次。",
     "default": false
   },
+  "owner_ids": {
+    "description": "只在这些 QQ 的私聊里响应晚安",
+    "type": "string",
+    "hint": "逗号分隔的 QQ 号。留空则使用 AstrBot 的 admins_id——这样别的好友说晚安不会占用你今天唯一的名额，也不会把日记发到你空间。填 * 表示不限制。",
+    "default": ""
+  },
   "publish_cron": {
     "description": "定时兜底（可选）",
     "type": "string",

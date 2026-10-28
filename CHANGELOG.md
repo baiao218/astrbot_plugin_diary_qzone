@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.2.0
+
+- 新增：`owner_ids` —— 只有名单里的 QQ 说「晚安」才写日记并发空间。
+  留空时回退到 AstrBot 的 `admins_id`；填 `*` 回到旧行为。
+  这样小号对外后，别的好友说晚安不会占掉今天唯一的名额、也不会把日记发到你空间
+- 修复：`/日记状态` 在「晚安触发：开」时 `owners` 未定义，会抛 `NameError`
+- 优化：`persona_id` 可显式指定，不再依赖「当前默认人格」（人分了主号/对外两套时必需）
+
 ## 1.1.0
 
 - 新增：`activity_feed_enable` 与 `{activity}` 占位符，可读取 `astrbot_plugin_observe_life` 的今日摘要，

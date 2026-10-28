@@ -36,7 +36,7 @@ help: |
 
   私聊里出现触发词（默认「晚安,睡了,睡觉,睡啦」）时自动写日记并发布。
   每天最多一篇；成功时不额外回复，失败会告诉你原因。
-version: 1.1.0
+version: 1.2.0
 author: baiao218
 repo: https://github.com/baiao218/astrbot_plugin_diary_qzone
 astrbot_version: ">=4.17.0"

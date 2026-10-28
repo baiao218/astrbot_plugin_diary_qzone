@@ -96,6 +96,24 @@ class DiaryQzonePlugin(Star):
         flat = re.sub(r"[\s~～!！。、,，…]+", "", text or "")
         return any(w in flat for w in self.goodnight_keywords())
 
+    def owner_ids(self) -> set[str]:
+        """哪些 QQ 说「晚安」才算数。
+
+        留空时回退到 AstrBot 的 admins_id，这样别人对她说晚安不会占掉
+        你今天唯一的名额、也不会把日记发到你的空间。填 * 表示不限制。
+        """
+        raw = str(self.settings.get("owner_ids") or "").strip()
+        if raw == "*":
+            return set()
+        if raw:
+            return {x.strip() for x in re.split(r"[,，\s]+", raw) if x.strip()}
+
+        try:
+            admins = self.context.get_config().get("admins_id") or []
+        except Exception:
+            admins = []
+        return {str(a) for a in admins if str(a).isdigit()}
+
     def _spawn(self, coro) -> None:
         """后台跑，防止关机前阻塞对话。"""
         task = asyncio.create_task(coro)
@@ -273,6 +291,12 @@ class DiaryQzonePlugin(Star):
             return
         if not event.is_private_chat():
             return
+        owners = self.owner_ids()
+        if owners and str(event.get_sender_id()) not in owners:
+            logger.info(
+                f"[日记] {event.get_sender_id()} 不是配置的主人，晚安不触发写日记"
+            )
+            return
         if not self._is_goodnight(event.get_message_str()):
             return
         if self.store.today_published():
@@ -316,6 +340,7 @@ class DiaryQzonePlugin(Star):
     async def cmd_status(self, event: AstrMessageEvent):
         """查看调度、Cookie 与人格状态。"""
         lines: list[str] = ["【日记插件状态】"]
+        owners = self.owner_ids()
 
         if bool(self.settings.get("goodnight_enable", True)):
             kws = "、".join(self.goodnight_keywords())
@@ -323,6 +348,9 @@ class DiaryQzonePlugin(Star):
             lines.append(f"晚安触发：开（{kws}）｜{state}")
         else:
             lines.append("晚安触发：关")
+        lines.append(
+            "响应 QQ：" + ("、".join(sorted(owners)) if owners else "不限制（任何好友说晚安都会写）")
+        )
 
         cron = str(self.settings.get("publish_cron") or "").strip()
         if not self.scheduler.enabled:

@@ -104,6 +104,7 @@ ugc_right: "1"
 | `goodnight_enable` | bool | `true` | 听到「晚安」就写日记 |
 | `goodnight_keywords` | string | `晚安,睡了,睡觉,睡啦` | 触发词，逗号分隔，命中任意一个即触发 |
 | `goodnight_notify` | bool | `false` | 晚安触发时也回一条发布结果（默认关，别破坏睡前气氛） |
+| `owner_ids` | string | 空 | 只在这些 QQ 的私聊里响应晚安，逗号分隔。留空回退到 AstrBot 的 `admins_id`；填 `*` 不限制。**别人对她说晚安不会占用你今天的名额，也不会发到你空间** |
 
 ### 内容
 
